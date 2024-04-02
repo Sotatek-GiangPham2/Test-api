@@ -1,0 +1,9 @@
+version: "3"
+services:
+  redis:
+    image: 'redis:7-alpine'
+    container_name: flostream-redis
+    ports:
+      - "6777:6379"
+volumes:
+  db-store:

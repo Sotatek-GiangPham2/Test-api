@@ -1,0 +1,44 @@
+{
+    "version": 2,
+    "env": {
+        "NEXT_PUBLIC_STORE_SECRET_ACCESS_KEY": "@NEXT_PUBLIC_STORE_SECRET_ACCESS_KEY",
+        "NEXT_PUBLIC_STORE_ACCESS_KEY_ID": "@NEXT_PUBLIC_STORE_ACCESS_KEY_ID",
+        "NEXT_PUBLIC_STORE_BUCKET": "@NEXT_PUBLIC_STORE_BUCKET",
+        "NEXT_PUBLIC_STORE_REGION": "@NEXT_PUBLIC_STORE_REGION",
+        "NEXT_PUBLIC_STORE_ENDPOINT": "@NEXT_PUBLIC_STORE_ENDPOINT",
+        "FE_STORAGE_URL": "@FE_STORAGE_URL",
+        "GOOGLE_AUTH_VERIFY_URL": "@GOOGLE_AUTH_VERIFY_URL",
+        "GOOGLE_CLIENT_SECRET": "@GOOGLE_CLIENT_SECRET",
+        "GOOGLE_CLIENT_ID": "@GOOGLE_CLIENT_ID",
+        "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@NEXT_PUBLIC_SUPABASE_ANON_KEY",
+        "NEXT_PUBLIC_SUPABASE_URL": "@NEXT_PUBLIC_SUPABASE_URL",
+        "REDIS_PORT": "@REDIS_PORT",
+        "REDIS_HOST": "@REDIS_HOST",
+        "MAIL_PORT": "@MAIL_PORT",
+        "MAIL_HOST": "@MAIL_HOST",
+        "MAIL_FORM": "@MAIL_FORM",
+        "MAIL_PASS": "@MAIL_PASS",
+        "MAIL_USER": "@MAIL_USER",
+        "JWT_SECRET_KEY": "@JWT_SECRET_KEY",
+        "JWT_EXP_MINUTE": "@JWT_EXP_MINUTE",
+        "APP_PORT": "@APP_PORT"
+    },
+    "builds": [
+        {
+            "src": "src/main.ts",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "src/main.ts",
+            "methods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ]
+        }
+    ]
+}
