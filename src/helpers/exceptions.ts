@@ -5,7 +5,7 @@ import {
 	NotFoundException,
 	UnauthorizedException,
 } from '@nestjs/common';
-import { EError } from 'src/helpers/constant';
+import { EError } from './constant';
 
 // 400
 // eslint-disable-next-line @typescript-eslint/ban-types
