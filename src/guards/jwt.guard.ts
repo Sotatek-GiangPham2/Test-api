@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { EError } from 'src/helpers/constant';
-import { httpUnAuthorized } from 'src/helpers/exceptions';
-import jwtr from 'src/helpers/redis';
+import { EError } from '../helpers/constant';
+import { httpUnAuthorized } from '../helpers/exceptions';
+import jwtr from '../helpers/redis';
 @Injectable()
 export class JwtAuthenticationGuard implements CanActivate {
 	private readonly jwtr: any;
