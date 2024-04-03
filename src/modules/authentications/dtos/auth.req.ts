@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { IsPassword } from 'src/decorators/password.decorator';
-import { REGEX_PASSWORD } from 'src/helpers/constant';
+import { IsPassword } from '../../../../src/decorators/password.decorator';
+import { REGEX_PASSWORD } from '../../../../src/helpers/constant';
 
 export class LoginGoogleDto {
 	@ApiProperty({ example: '4/0AfJohXkgOVdwSMIbEvD9AjKvn3c8T6GYFHMnfnIiD9F_XYxo71pUDPYjCRbZnzQYtcvZ4g' })
