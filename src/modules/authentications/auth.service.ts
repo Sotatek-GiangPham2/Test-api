@@ -12,13 +12,13 @@ import axios from 'axios';
 import { JwtService } from '@nestjs/jwt';
 import moment from 'moment';
 import { Injectable } from '@nestjs/common';
-import { httpBadRequest } from 'src/helpers/exceptions';
-import { EError } from 'src/helpers/constant';
-import supabaseClient from 'src/helpers/supabase';
-import { generateHash, getUsername, validateHash } from 'src/helpers/hash-string';
+import { httpBadRequest } from '../../../src/helpers/exceptions';
+import { EError } from '../../../src/helpers/constant';
+import supabaseClient from '../../../src/helpers/supabase';
+import { generateHash, getUsername, validateHash } from '../../../src/helpers/hash-string';
 import { MailService } from '../mails/mail.service';
 import { randomBytes } from 'crypto';
-import jwtr from 'src/helpers/redis';
+import jwtr from '../../../src/helpers/redis';
 @Injectable()
 export class AuthService {
 	private readonly client: OAuth2Client;
