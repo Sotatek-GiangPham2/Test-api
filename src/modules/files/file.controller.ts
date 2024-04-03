@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Headers, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiHeaders, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { GetUserInforGuard } from 'src/guards/getUser.guard';
-import { JwtAuthenticationGuard } from 'src/guards/jwt.guard';
+import { GetUserInforGuard } from '../../../src/guards/getUser.guard';
+import { JwtAuthenticationGuard } from '../../../src/guards/jwt.guard';
 import {
 	CheckPasswordDto,
 	FileIdDto,
