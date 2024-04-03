@@ -3,11 +3,11 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import moment from 'moment';
-import { EError, USER_ACTION, USER_POINT } from 'src/helpers/constant';
-import { httpBadRequest } from 'src/helpers/exceptions';
-import { generateHash, validateHash } from 'src/helpers/hash-string';
-import s3Client from 'src/helpers/s3';
-import supabaseClient from 'src/helpers/supabase';
+import { EError, USER_ACTION, USER_POINT } from '../../../src/helpers/constant';
+import { httpBadRequest } from '../../../src/helpers/exceptions';
+import { generateHash, validateHash } from '../../../src/helpers/hash-string';
+import s3Client from '../../../src/helpers/s3';
+import supabaseClient from '../../../src/helpers/supabase';
 import {
 	CheckPasswordDto,
 	FileIdDto,
