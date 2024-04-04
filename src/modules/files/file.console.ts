@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Command, Console } from 'nestjs-console';
-import supabaseClient from 'src/helpers/supabase';
+import supabaseClient from '../../../src/helpers/supabase';
 import { S3 } from 'aws-sdk';
-import { sleep } from 'src/helpers/common';
+import { sleep } from '../../../src/helpers/common';
 import moment from 'moment';
 
 @Console()
