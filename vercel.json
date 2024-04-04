@@ -18,4 +18,10 @@
             ]
         }
     ]
+    "crons": [
+        {
+            "path": "/app/api/cron",
+            "schedule": "10 * * * *"
+        }
+    ]
 }
