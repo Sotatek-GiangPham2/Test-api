@@ -55,7 +55,7 @@ jobs:
         run: docker inspect --format='{{index .RepoDigests 0}}' ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest | cut -d '@' -f 2-
 
       - name: Output
-        run: echo "{{ steps.sha256_reach.ouputs.stdout }}"
+        run: echo "${{ steps.sha256_reach.ouputs.stdout }}"
       # - name: Push to repository
       #   run: docker push ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest
       #   id: output_SHA
