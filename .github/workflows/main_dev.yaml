@@ -72,5 +72,5 @@ jobs:
           git config --global user.email "giang.pham2@sotatek"
           git config --global user.name "Giang Pham"
           echo "DOCKER SHA: ${{ steps.reach-sha.outputs.stdout }}"
-          sed -i "s/^  tag:.*/  tag: latest@${{ teps.reach-sha.outputs.stdout }}/" values.yaml
+          sed -i "s/^  tag:.*/  tag: latest@${{ steps.reach-sha.outputs.stdout }}/" values.yaml
 
