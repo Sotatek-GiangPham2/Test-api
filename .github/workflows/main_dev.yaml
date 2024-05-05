@@ -14,7 +14,6 @@ env:
   REPOSITORY_NAME: repository-k8s.sotaicg.com
   PROJECT_NAME: test
   TAG: latest
-  TAG_SHA: string
 
 jobs:
   build:
@@ -53,14 +52,14 @@ jobs:
       
       - name: Get Docker image digest
         run: |
-          TAG_SHA1=$(docker inspect --format='{{index .RepoDigests 0}}' "${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest" | cut -d '@' -f 2-)
-          echo "TAG_SHA=$TAG_SHA1" >> $GITHUB_ENV
+          TAG_SHA=$(docker inspect --format='{{index .RepoDigests 0}}' "${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest" | cut -d '@' -f 2-)
+          echo "TAG_SHA=$TAG_SHA1" >> $GITHUB_OUTPUT
 
       - name: Output
         run: echo $TAG_SHA
 
   update-manifest-stage:
-    needs: build
+    needs: [build]
     runs-on: [ubuntu-latest]
     if: (startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/')) && ${{ needs.build.result == 'success' }}
     steps:
@@ -75,8 +74,8 @@ jobs:
           ls
           git config --global user.email "giang.pham2@sotatek"
           git config --global user.name "Giang Pham"
-          echo "DOCKER SHA: ${TAG_SHA}"
-          sed -i "s/^  tag:.*/  tag: latest@${TAG_SHA}/" ./frontend/values.yaml
+          echo "DOCKER SHA: ${{ needs.build.outputs.TAG_SHA }}"
+          sed -i "s/^  tag:.*/  tag: latest@${{ needs.build.outputs.TAG_SHA }}/" ./frontend/values.yaml
           git add -A
           git commit -am "Update for new image"
       - run: git push origin master
