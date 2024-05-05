@@ -56,19 +56,19 @@ jobs:
     runs-on: [self-hosted, linux, x64]
     if: (startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/')) && ${{ needs.build.result == 'success' }}
     steps:
-      - name: Access helm repository
-        uses: actions/checkout@v3
-        with:
-          repository: vicg-development/Test
-          ref: 'master'
-          token: ${{ secrets.G_TOKEN }}
-      - name: Setup git config
+      - name: Git clone file
         run: /
+          cd /home/epc
           git config --global user.email "giang.pham2@sotatek.com"
           git config --global user.name "Giang Pham"
+          git clone git@github.com:vicg-development/Test.git
           ls
-          sed -i 's|__TAG__|${TAG}|g' ./frontend/values.yaml
-          git add -A
-          git commit -m "Update"
-      - run: echo ${{ github }}
-      - run: git push origin master
+          cd Test/frontend/
+          sed -i 's|__TAG__|${TAG}|g' values.yaml
+          git add .
+          git commit -m "Update new version"
+          git push origin master
+      - name: Remote remote folder
+        run: rm -rf ./Test
+        
+
