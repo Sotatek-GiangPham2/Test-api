@@ -1,5 +1,5 @@
 FROM nginx
-# LABEL maintainer="KienLe TV"
+LABEL maintainer="KienLe TV"
 
 # COPY . /app
 # WORKDIR /app
