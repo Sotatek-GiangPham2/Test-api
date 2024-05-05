@@ -45,7 +45,7 @@ jobs:
           echo "TAG=$TAG" >> $GITHUB_ENV
 
       - name: Build Harbor repository
-        run: docker build -t ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest
+        run: docker build -t ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest .
       
       - name: Push to repository
         run: docker push ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest
