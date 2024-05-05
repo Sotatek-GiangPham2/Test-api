@@ -60,7 +60,7 @@ jobs:
           echo "TAG_SHA=$TAG_SHA1" >> $GITHUB_OUTPUT
 
       - name: Output
-        run: echo $TAG_SHA
+        run: echo ${{ steps.SHA_ID.outputs.TAG_SHA }}
 
   update-manifest-stage:
     needs: [build]
