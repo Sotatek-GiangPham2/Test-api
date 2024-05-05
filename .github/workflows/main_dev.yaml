@@ -51,24 +51,26 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest
+
+      - name: Reach SHA ingest
+        id: reach-sha
+        run: docker inspect --format='{{index .RepoDigests 0}}' ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest | cut -d '@' -f 2-
+
   update-manifest-stage:
     needs: build
-    runs-on: [self-hosted, linux, x64]
+    runs-on: [ubuntu-latest]
     if: (startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/')) && ${{ needs.build.result == 'success' }}
     steps:
-      - name: Git clone file
-        run: /
-          cd /home/epc
-          git config --global user.email "giang.pham2@sotatek.com"
+      - name: Reach helm repo
+        uses: actions/checkout@v3
+        with:
+          repository: vicg-development/Test
+          ref: "master"
+          token: ${{ secrets.G_TOKEN }}
+      - name: setup git config
+        run: |
+          git config --global user.email "giang.pham2@sotatek"
           git config --global user.name "Giang Pham"
-          git clone git@github.com:vicg-development/Test.git
-          ls
-          cd Test/frontend/
-          sed -i 's|__TAG__|${TAG}|g' values.yaml
-          git add .
-          git commit -m "Update new version"
-          git push origin master
-      - name: Remote remote folder
-        run: rm -rf ./Test
-        
+          echo "DOCKER SHA: ${{ steps.reach-sha.outputs.stdout }}"
+          sed -i "s/^  tag:.*/  tag: latest@${{ teps.reach-sha.outputs.stdout }}/" values.yaml
 
