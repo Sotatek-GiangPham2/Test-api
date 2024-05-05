@@ -52,12 +52,13 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest
+          output: type=digest,dest=/tmp/test.txt
 
       # - name: Reach SHA ingest
       #   id: reach-sha
       #   run: docker inspect --format='{{index .RepoDigests 0}}' ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest | cut -d '@' -f 2-
       - name: Reach
-        run: echo ${{ github.sha }}
+        run: cat /tmp/test.txt
   # update-manifest-stage:
   #   needs: build
   #   runs-on: [ubuntu-latest]
