@@ -14,6 +14,7 @@ env:
   REPOSITORY_NAME: repository-k8s.sotaicg.com
   PROJECT_NAME: test
   TAG: latest
+  TAG_SHA: string
 
 jobs:
   build:
@@ -52,8 +53,8 @@ jobs:
       
       - name: Get Docker image digest
         run: |
-          TAG_SHA=$(docker inspect --format='{{index .RepoDigests 0}}' "${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest" | cut -d '@' -f 2-)
-          echo "TAG_SHA=$TAG_SHA" >> $GITHUB_ENV
+          TAG_SHA1=$(docker inspect --format='{{index .RepoDigests 0}}' "${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest" | cut -d '@' -f 2-)
+          echo "TAG_SHA=$TAG_SHA1" >> $GITHUB_ENV
 
       - name: Output
         run: echo $TAG_SHA
