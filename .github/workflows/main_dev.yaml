@@ -53,7 +53,7 @@ jobs:
       - name: Get Docker image digest
         run: |
           TAG_SHA=$(docker inspect --format='{{index .RepoDigests 0}}' "${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest" | cut -d '@' -f 2-)
-          echo "TAG_SHA=$TAG_SHA1" >> $GITHUB_OUTPUT
+          echo "TAG_SHA=$TAG_SHA" >> $GITHUB_OUTPUT
 
       - name: Output
         run: echo $TAG_SHA
