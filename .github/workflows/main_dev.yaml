@@ -3,7 +3,7 @@ name: CI/CD for development environment (FE)
 on:
   push:
     branches:
-      - master
+      - main
     tags:
       - '*'
   # pull_request:
@@ -54,7 +54,7 @@ jobs:
   update-manifest-stage:
     needs: build
     runs-on: [self-hosted, linux, x64]
-    if: (startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/tags/')) && ${{ needs.build.result == 'success' }}
+    if: (startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/')) && ${{ needs.build.result == 'success' }}
     steps:
       - name: Git clone file
         run: /
