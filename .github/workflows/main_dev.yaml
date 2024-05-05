@@ -3,7 +3,7 @@ name: CI/CD for development environment (FE)
 on:
   push:
     branches:
-      - develop
+      - master
     tags:
       - '*'
   # pull_request:
@@ -53,8 +53,8 @@ jobs:
           tags: ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest
   update-manifest-stage:
     needs: build
-    runs-on: [self-hosted, linux, x64, development]
-    if: (startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/tags/')) && ${{ needs.build.result == 'success' }}
+    runs-on: [self-hosted, linux, x64]
+    if: (startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/tags/')) && ${{ needs.build.result == 'success' }}
     steps:
       - name: Git clone file
         run: /
