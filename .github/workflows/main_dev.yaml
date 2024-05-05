@@ -18,7 +18,10 @@ env:
 jobs:
   build:
     runs-on: [self-hosted, linux, x64]
+    outputs:
+      output1: ${{ steps.SHA_ID.outputs.TAG_SHA }}
     steps:
+    
       - name: Checkout code
         uses: actions/checkout@v4
       
@@ -51,9 +54,10 @@ jobs:
         run: docker push ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest
       
       - name: Get Docker image digest
+        id: SHA_ID
         run: |
-          TAG_SHA=$(docker inspect --format='{{index .RepoDigests 0}}' "${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest" | cut -d '@' -f 2-)
-          echo "TAG_SHA=$TAG_SHA" >> $GITHUB_OUTPUT
+          TAG_SHA1=$(docker inspect --format='{{index .RepoDigests 0}}' "${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest" | cut -d '@' -f 2-)
+          echo "TAG_SHA=$TAG_SHA1" >> $GITHUB_OUTPUT
 
       - name: Output
         run: echo $TAG_SHA
@@ -63,6 +67,8 @@ jobs:
     runs-on: [ubuntu-latest]
     if: (startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/')) && ${{ needs.build.result == 'success' }}
     steps:
+      - env:
+          OUTPUT1: ${{needs.build.outputs.output1}}
       - name: Reach helm repo
         uses: actions/checkout@v3
         with:
@@ -74,8 +80,8 @@ jobs:
           ls
           git config --global user.email "giang.pham2@sotatek"
           git config --global user.name "Giang Pham"
-          echo "DOCKER SHA: ${{ needs.build.outputs.TAG_SHA }}"
-          sed -i "s/^  tag:.*/  tag: latest@${{ needs.build.outputs.TAG_SHA }}/" ./frontend/values.yaml
+          echo "DOCKER SHA: $OUTPUT1"
+          sed -i "s/^  tag:.*/  tag: latest@$OUTPUT1/" ./frontend/values.yaml
           git add -A
           git commit -am "Update for new image"
       - run: git push origin master
