@@ -57,7 +57,7 @@ jobs:
       #   id: reach-sha
       #   run: docker inspect --format='{{index .RepoDigests 0}}' ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest | cut -d '@' -f 2-
       - name: Reach
-        run: echo "${{ steps.output_SHA.outputs.stdout }}" | grep '${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest'
+        run: echo ${{ github.sha }}
   # update-manifest-stage:
   #   needs: build
   #   runs-on: [ubuntu-latest]
