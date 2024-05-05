@@ -1,9 +1,9 @@
-name: CI/CD for development environment (FE)
+name: CI/CD for staging environment (FE)
 
 on:
   push:
     branches:
-      - main
+      - develop
     tags:
       - '*'
   # pull_request:
@@ -48,7 +48,14 @@ jobs:
           echo "TAG=$TAG" >> $GITHUB_ENV
 
       - name: Build Harbor repository
-        run: docker build -t ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest .
+        run: |
+          docker build \
+            --build-arg REACT_APP_API_URL=https://dev.data-platform-api.sotaicg.com/api/v1 \
+            --build-arg REACT_APP_DOMAIN_API_SDK=dev.data-platform-api.sotaicg.com/ \
+            --build-arg REACT_APP_CHUNK_SIZE_MB=100 \
+            --build-arg REACT_APP_GOOGLE_CLIENT_ID=81963526024-m0rt10khegk1fici68g7punu1spuqnhs.apps.googleusercontent.com \
+            -t ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest .
+
       
       - name: Push to repository
         run: docker push ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest
@@ -65,13 +72,13 @@ jobs:
   update-manifest-stage:
     needs: [build]
     runs-on: [ubuntu-latest]
-    if: (startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/')) && ${{ needs.build.result == 'success' }}
+    if: (startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/tags/')) && ${{ needs.build.result == 'success' }}
     steps:
       - name: Reach helm repo
         uses: actions/checkout@v3
         with:
           repository: vicg-development/Test
-          ref: "master"
+          ref: "master-2"
           token: ${{ secrets.G_TOKEN }}
       - name: setup git config
         env:
@@ -84,5 +91,5 @@ jobs:
           sed -i "s/^  tag:.*/  tag: latest@$OUTPUT1/" ./frontend/values.yaml
           git add -A
           git commit -am "Update for new image"
-      - run: git push origin master
+      - run: git push origin master-2
 
