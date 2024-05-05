@@ -1,0 +1,70 @@
+name: CI/CD for development environment (FE)
+
+on:
+  push:
+    branches:
+      - develop
+    tags:
+      - '*'
+  # pull_request:
+  #   branches:
+  #     - develop
+
+env:
+  REPOSITORY_NAME: repository-k8s.sotaicg.com
+  PROJECT_NAME: test
+  TAG: latest
+
+jobs:
+  build:
+    runs-on: [self-hosted, linux, x64]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker registry
+        uses: docker/login-action@v3
+        with:
+          registry: https://repository-k8s.sotaicg.com/
+          username: ${{ secrets.REPOSITORY_USERNAME }}
+          password: ${{ secrets.REPOSITORY_PASSWORD }}
+          logout: false
+          
+      - name: Determine tag
+        if: always()
+        run: |
+          if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
+            TAG=$(echo "${{ github.ref }}" | sed 's/refs\/tags\///')
+          else
+            TAG="${{ env.TAG }}"
+          fi
+          echo "Tag: $TAG"
+          echo "TAG=$TAG" >> $GITHUB_ENV
+
+      - name: Build and push to Harbor repository
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest
+  update-manifest-stage:
+    needs: build
+    runs-on: [self-hosted, linux, x64, development]
+    if: (startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/tags/')) && ${{ needs.build.result == 'success' }}
+    steps:
+      - name: Git clone file
+        run: /
+          git config --global user.email "giang.pham2@sotatek.com"
+          git config --global user.name "Giang Pham"
+          git clone git@github.com:vicg-development/Test.git
+          ls
+          cd Test/frontend/
+          sed -i 's|__TAG__|${TAG}|g' values.yaml
+          git add .
+          git commit -m "Update new version"
+          git push origin master
+
