@@ -55,9 +55,8 @@ jobs:
           TAG_SHA=$(docker inspect --format='{{index .RepoDigests 0}}' "${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest" | cut -d '@' -f 2-)
           echo "TAG_SHA=$TAG_SHA" >> $GITHUB_ENV
 
-      - name: Output TAG_SHA
-        id: tag_sha_output
-        run: echo "::set-output name=tag_sha::${TAG_SHA}"
+      - name: Output
+        run: echo $TAG_SHA
 
   update-manifest-stage:
     needs: build
@@ -75,8 +74,8 @@ jobs:
           ls
           git config --global user.email "giang.pham2@sotatek"
           git config --global user.name "Giang Pham"
-          echo "DOCKER SHA: $TAG_SHA"
-          sed -i "s/^  tag:.*/  tag: latest@${{ needs.build.outputs.tag_sha }}/" ./frontend/values.yaml
+          echo "DOCKER SHA: ${TAG_SHA}"
+          sed -i "s/^  tag:.*/  tag: latest@${TAG_SHA}/" ./frontend/values.yaml
           git add -A
           git commit -am "Update for new image"
       - run: git push origin master
