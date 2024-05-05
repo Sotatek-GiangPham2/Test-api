@@ -67,8 +67,6 @@ jobs:
     runs-on: [ubuntu-latest]
     if: (startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/')) && ${{ needs.build.result == 'success' }}
     steps:
-      - env:
-          OUTPUT1: ${{needs.build.outputs.output1}}
       - name: Reach helm repo
         uses: actions/checkout@v3
         with:
@@ -76,6 +74,8 @@ jobs:
           ref: "master"
           token: ${{ secrets.G_TOKEN }}
       - name: setup git config
+        env:
+          OUTPUT1: ${{needs.build.outputs.output1}}
         run: |
           ls
           git config --global user.email "giang.pham2@sotatek"
