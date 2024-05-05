@@ -57,38 +57,26 @@ jobs:
 
       - name: Output
         run: echo $TAG_SHA
-      # - name: Push to repository
-      #   run: docker push ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest
-      #   id: output_SHA
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: .
-      #     file: ./Dockerfile
-      #     push: true
-      #     tags: ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest
-      #     output: type=local,dest=/tmp/test.txt
 
-      # # - name: Reach SHA ingest
-      # #   id: reach-sha
-      # #   run: docker inspect --format='{{index .RepoDigests 0}}' ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest | cut -d '@' -f 2-
-      # - name: Reach
-      #   run: echo "${steps.output_SHA.outputs.digest}"
-  # update-manifest-stage:
-  #   needs: build
-  #   runs-on: [ubuntu-latest]
-  #   if: (startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/')) && ${{ needs.build.result == 'success' }}
-  #   steps:
-  #     - name: Reach helm repo
-  #       uses: actions/checkout@v3
-  #       with:
-  #         repository: vicg-development/Test
-  #         ref: "master"
-  #         token: ${{ secrets.G_TOKEN }}
-  #     - name: setup git config
-  #       run: |
-  #         ls
-  #         git config --global user.email "giang.pham2@sotatek"
-  #         git config --global user.name "Giang Pham"
-  #         echo "DOCKER SHA: ${{ steps.reach-sha.outputs.stdout }}"
-  #         sed -i "s/^  tag:.*/  tag: latest@${{ steps.reach-sha.outputs.stdout }}/" values.yaml
+  update-manifest-stage:
+    needs: build
+    runs-on: [ubuntu-latest]
+    if: (startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/')) && ${{ needs.build.result == 'success' }}
+    steps:
+      - name: Reach helm repo
+        uses: actions/checkout@v3
+        with:
+          repository: vicg-development/Test
+          ref: "master"
+          token: ${{ secrets.G_TOKEN }}
+      - name: setup git config
+        run: |
+          ls
+          git config --global user.email "giang.pham2@sotatek"
+          git config --global user.name "Giang Pham"
+          echo "DOCKER SHA: $TAG_SHA"
+          sed -i "s/^  tag:.*/  tag: latest@$TAG_SHA/" ./frontend/values.yaml
+          git add -A
+          git commit -am "Update for new image"
+      - run: git push origin master
 
