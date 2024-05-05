@@ -50,12 +50,13 @@ jobs:
       - name: Push to repository
         run: docker push ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest
       
-      - name: Reach ingest of the image
-        id: sha256_reach
-        run: docker inspect --format='{{index .RepoDigests 0}}' ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest | cut -d '@' -f 2-
+      - name: Get Docker image digest
+        run: |
+          TAG_SHA=$(docker inspect --format='{{index .RepoDigests 0}}' "${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest" | cut -d '@' -f 2-)
+          echo "TAG_SHA=$TAG_SHA" >> $GITHUB_ENV
 
       - name: Output
-        run: echo "${{ steps.sha256_reach.ouputs.stdout }}"
+        run: echo $TAG_SHA
       # - name: Push to repository
       #   run: docker push ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest
       #   id: output_SHA
