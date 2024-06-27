@@ -38,5 +38,4 @@ jobs:
             value=$(echo "${{ steps.import-secrets.outputs.secrets }}" | jq -r ".[\"$secret\"]")
             echo "$secret=$value" >> .env.production
           done
-          cat .env.production
 
