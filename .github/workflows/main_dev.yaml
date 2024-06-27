@@ -34,9 +34,8 @@ jobs:
           touch .env.production
 
           # Process and write secrets to .env.production
-          for secret in $(echo "${{ steps.import-secrets.outputs.secrets }}" | jq -r 'keys[]'); do
-            value=$(echo "${{ steps.import-secrets.outputs.secrets }}" | jq -r ".[\"$secret\"]")
-            echo "$secret=$value" >> .env.production
+          for var in $(env); do
+            echo "$var=${!var}" >> .env.production  # Indirect expansion to get value
           done
       - name: Output .env.production contents
-        run: echo "Hello"
+        run: cat .env.production
