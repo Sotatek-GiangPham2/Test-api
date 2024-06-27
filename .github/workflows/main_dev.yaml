@@ -49,6 +49,10 @@ jobs:
           touch secrets.txt
           echo '${{ toJson(steps.import-secrets.outputs) }}' >> secrets.json
 
-      - name: Cat
-        run: cat secrets.txt
+      - name: Create .env.production file
+        run: |
+          printenv | grep -vE '^GITHUB|^ACTIONS' > .env.production
+
+      - name: cat
+        run: cat .env.production
 
