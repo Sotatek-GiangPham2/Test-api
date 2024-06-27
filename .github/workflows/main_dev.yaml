@@ -36,4 +36,6 @@ jobs:
         run: |
           touch secrets.json
           echo '${{ toJson(steps.import-secrets.outputs) }}' >> secrets.json
+      - name: Cat
+        run: cat secrets.json
 
