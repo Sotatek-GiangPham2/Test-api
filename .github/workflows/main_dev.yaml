@@ -39,4 +39,4 @@ jobs:
             echo "$secret=$value" >> .env.production
           done
       - name: Output .env.production contents
-        run: cat "Hello"
+        run: echo "Hello"
