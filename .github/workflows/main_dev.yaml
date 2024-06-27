@@ -29,6 +29,8 @@ jobs:
             roleId: ${{ secrets.VAULT_ROLE_ID }}
             secretId: ${{ secrets.VAULT_SECRET_ID }}
             tlsSkipVerify: true
+            secrets: |
+              develop/data/backend REDIS_PORT | REDIS_PORT
         - name: Step following 'Import Secrets'
           run: |
             touch secrets.json
