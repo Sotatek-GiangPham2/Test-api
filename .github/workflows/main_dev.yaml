@@ -29,8 +29,9 @@ jobs:
           roleId: ${{ secrets.VAULT_ROLE_ID }}
           secretId: ${{ secrets.VAULT_SECRET_ID }}
           tlsSkipVerify: true
-          # Request all secrets under develop/data/backend
-          secrets: "develop/data/backend/*" 
+          secrets: |
+              develop/data/backend * | MYAPP_ ;
+
 
       - name: Process Secrets
         env:
