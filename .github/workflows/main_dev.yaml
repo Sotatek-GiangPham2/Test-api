@@ -30,11 +30,15 @@ jobs:
           secretId: ${{ secrets.VAULT_SECRET_ID }}
           tlsSkipVerify: true
           secrets: |
-              develop/data/backend * 
+            develop/data/backend *
 
-
-      - name: Process Secrets
-        env:
-          SECRETS_JSON: ${{ toJson(steps.import-secrets.outputs) }}
+      - name: Process Secrets and Create .env.production
         run: |
-          echo ${{ toJson(steps.import-secrets.outputs) }}
+          # Create an empty .env.production file
+          touch .env.production
+
+          # Process and write secrets to .env.production
+          for secret in $(echo "${{ steps.import-secrets.outputs.secrets }}" | jq -r 'keys[]'); do
+            value=$(echo "${{ steps.import-secrets.outputs.secrets }}" | jq -r ".[\"$secret\"]")
+            echo "$secret=$value" >> .env.production
+          done
