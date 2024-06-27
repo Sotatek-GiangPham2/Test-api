@@ -7,6 +7,10 @@ on:
     tags:
       - '*'
 
+env:
+  REPOSITORY_NAME: repository-k8s.sotaicg.com
+  PROJECT_NAME: test
+  TAG: latest
 
 jobs:
   build:
@@ -26,8 +30,10 @@ jobs:
           secretId: ${{ secrets.VAULT_SECRET_ID }}
           tlsSkipVerify: true
           secrets: |
-            develop/data/backend REDIS_PORT | REDIS_PORT
+              develop/data/backend * 
 
-      - name: Process Secrets and Create .env.production
+      - name: Step following 'Import Secrets'
         run: |
-          "my-cli --token '${{ steps.import-secrets.outputs.REDIS_PORT}}'"
+          touch secrets.json
+          echo '${{ toJson(steps.import-secrets.outputs) }}' >> secrets.json
+
