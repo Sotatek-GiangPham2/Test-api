@@ -30,8 +30,7 @@ jobs:
           secretId: ${{ secrets.VAULT_SECRET_ID }}
           tlsSkipVerify: true
           secrets: |
-              develop/data/backend REPOSITORY_USERNAME
-              develop/data/backend REPOSITORY_PASSWORD
+              develop/data/backend *
 
 
       - name: Set up Docker Buildx
