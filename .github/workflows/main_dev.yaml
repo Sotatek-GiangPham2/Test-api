@@ -17,7 +17,7 @@ env:
 
 jobs:
   build:
-    runs-on: [self-hosted, linux, x64]
+    runs-on: ubuntu-latest
     steps:
         - name: Import Secrets
           id: import-secrets
