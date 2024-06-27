@@ -28,6 +28,7 @@ jobs:
             method: approle
             roleId: ${{ secrets.VAULT_ROLE_ID }}
             secretId: ${{ secrets.VAULT_SECRET_ID }}
+            tlsSkipVerify: true
         - name: Step following 'Import Secrets'
           run: |
             touch secrets.json
