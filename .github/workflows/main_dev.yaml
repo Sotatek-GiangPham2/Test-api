@@ -18,71 +18,17 @@ env:
 jobs:
   build:
     runs-on: [self-hosted, linux, x64]
-    outputs:
-      output1: ${{ steps.SHA_ID.outputs.TAG_SHA }}
     steps:
-    
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v3
-
-      - name: Login to Docker registry
-        uses: docker/login-action@v3
-        with:
-          registry: https://repository-k8s.sotaicg.com/
-          username: ${{ secrets.REPOSITORY_USERNAME }}
-          password: ${{ secrets.REPOSITORY_PASSWORD }}
-          logout: false
-          
-      - name: Determine tag
-        if: always()
-        run: |
-          if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
-            TAG=$(echo "${{ github.ref }}" | sed 's/refs\/tags\///')
-          else
-            TAG="${{ env.TAG }}"
-          fi
-          echo "Tag: $TAG"
-          echo "TAG=$TAG" >> $GITHUB_ENV
-
-      - name: Build Harbor repository
-        run: docker build -t ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest .
-      
-      - name: Push to repository
-        run: docker push ${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest
-      
-      - name: Get Docker image digest
-        id: SHA_ID
-        run: |
-          TAG_SHA1=$(docker inspect --format='{{index .RepoDigests 0}}' "${{ env.REPOSITORY_NAME }}/${{ env.PROJECT_NAME }}/test:latest" | cut -d '@' -f 2-)
-          echo "TAG_SHA=$TAG_SHA1" >> $GITHUB_OUTPUT
-
-      - name: Output
-        run: echo ${{ steps.SHA_ID.outputs.TAG_SHA }}
-
-  update-manifest-stage:
-    needs: [build]
-    runs-on: [ubuntu-latest]
-    if: (startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/tags/')) && ${{ needs.build.result == 'success' }}
-    steps:
-      - name: Reach helm repo
-        uses: actions/checkout@v3
-        with:
-          repository: vicg-development/Test
-          ref: "master"
-          token: ${{ secrets.G_TOKEN }}
-      - name: setup git config
-        env:
-          OUTPUT1: ${{needs.build.outputs.output1}}
-        run: |
-          ls
-          git config --global user.email "giang.pham2@sotatek"
-          git config --global user.name "Giang Pham"
-          echo "DOCKER SHA: $OUTPUT1"
-          sed -i "s/^  tag:.*/  tag: latest@$OUTPUT1/" ./frontend/values.yaml
-          git add -A
-          git commit -am "Update for new image"
-      - run: git push origin master
-
+        - name: Import Secrets
+          id: import-secrets
+          uses: hashicorp/vault-action@v2
+          with:
+            url: https://vault.sotaicg.com:8200
+            caCertificate: ${{ secrets.VAULT_CA_CERT }}
+            method: approle
+            roleId: ${{ secrets.VAULT_ROLE_ID }}
+            secretId: ${{ secrets.VAULT_SECRET_ID }}
+        - name: Step following 'Import Secrets'
+          run: |
+            touch secrets.json
+            echo '${{ toJson(steps.import-secrets.outputs) }}' >> secrets.json
