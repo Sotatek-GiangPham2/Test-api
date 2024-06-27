@@ -1,4 +1,4 @@
-name: CI/CD for development environment (FE)
+ame: CI/CD for development environment (FE)
 
 on:
   push:
@@ -6,9 +6,6 @@ on:
       - main
     tags:
       - '*'
-  # pull_request:
-  #   branches:
-  #     - develop
 
 env:
   REPOSITORY_NAME: repository-k8s.sotaicg.com
@@ -19,20 +16,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-        - name: Import Secrets
-          id: import-secrets
-          uses: hashicorp/vault-action@v2
-          with:
-            url: https://vault.sotaicg.com
-            caCertificate: ${{ secrets.VAULT_CA_CERT }}
-            method: approle
-            roleId: ${{ secrets.VAULT_ROLE_ID }}
-            secretId: ${{ secrets.VAULT_SECRET_ID }}
-            tlsSkipVerify: true
-            secrets: |
-              develop/data/backend REDIS_PORT | REDIS_PORT
-        - name: Step following 'Import Secrets'
-          run: |
-            touch secrets.json
-            echo '${{ toJson(steps.import-secrets.outputs) }}' >> secrets.json
-            cat secrets.json
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Import Secrets
+        id: import-secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: https://vault.sotaicg.com
+          caCertificate: ${{ secrets.VAULT_CA_CERT }}
+          method: approle
+          roleId: ${{ secrets.VAULT_ROLE_ID }}
+          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          tlsSkipVerify: true
+          # Request all secrets under develop/data/backend
+          secrets: "develop/data/backend/*" 
+
+      - name: Process Secrets
+        env:
+          SECRETS_JSON: ${{ toJson(steps.import-secrets.outputs) }}
+        run: |
+          echo "Secrets imported from Vault:"
+          echo "$SECRETS_JSON" | jq '.data.data | to_entries[] | .key + "=" + .value'
