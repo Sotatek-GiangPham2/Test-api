@@ -34,8 +34,8 @@ jobs:
 
       - name: Step following 'Import Secrets'
         run: |
-          touch secrets.json
-          echo '${{ steps.import-secrets.outputs }}' >> secrets.txt
+          touch secrets.txt
+          echo 't${{ steps.import-secrets.outputs }}' >> secrets.txt
       - name: Cat
         run: cat secrets.txt
 
