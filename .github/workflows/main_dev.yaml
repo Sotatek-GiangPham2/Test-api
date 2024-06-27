@@ -1,4 +1,4 @@
-ame: CI/CD for development environment (FE)
+name: CI/CD for development environment (FE)
 
 on:
   push:
