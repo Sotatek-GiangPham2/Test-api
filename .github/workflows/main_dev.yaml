@@ -30,12 +30,11 @@ jobs:
           secretId: ${{ secrets.VAULT_SECRET_ID }}
           tlsSkipVerify: true
           secrets: |
-              develop/data/backend * | MYAPP_ ;
+              develop/data/backend * 
 
 
       - name: Process Secrets
         env:
           SECRETS_JSON: ${{ toJson(steps.import-secrets.outputs) }}
         run: |
-          echo "Secrets imported from Vault:"
-          echo "$SECRETS_JSON" | jq '.data.data | to_entries[] | .key + "=" + .value'
+          echo ${{ toJson(steps.import-secrets.outputs) }}
