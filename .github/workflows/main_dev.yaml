@@ -23,7 +23,7 @@ jobs:
           id: import-secrets
           uses: hashicorp/vault-action@v2
           with:
-            url: https://vault.sotaicg.com:8200
+            url: https://vault.sotaicg.com
             caCertificate: ${{ secrets.VAULT_CA_CERT }}
             method: approle
             roleId: ${{ secrets.VAULT_ROLE_ID }}
