@@ -44,14 +44,13 @@ jobs:
           password: ${{ env.REPOSITORY_PASSWORD }}
           logout: false
           
-      - name: Step following 'Import Secrets'
+      - name: Save secrets to .env.production
         run: |
-          touch secrets.txt
-          echo '${{ toJson(steps.import-secrets.outputs) }}' >> secrets.json
+          echo '${{ toJson(steps.import-secrets.outputs) }}' | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' > .env.production
 
-      - name: Create .env.production file
-        run: |
-          printenv | grep -vE '^GITHUB|^ACTIONS' > .env.production
+      # - name: Create .env.production file
+      #   run: |
+      #     printenv | grep -vE '^GITHUB|^ACTIONS' > .env.production
 
       - name: cat
         run: cat .env.production
