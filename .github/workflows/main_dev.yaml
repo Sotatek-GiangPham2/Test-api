@@ -26,16 +26,8 @@ jobs:
           secretId: ${{ secrets.VAULT_SECRET_ID }}
           tlsSkipVerify: true
           secrets: |
-            develop/data/backend *
+            develop/data/backend REDIS_PORT | REDIS_PORT
 
       - name: Process Secrets and Create .env.production
         run: |
-          # Create an empty .env.production file
-          touch .env.production
-
-          # Process and write secrets to .env.production
-          for var in $(env); do
-            echo "$var=${!var}" >> .env.production  # Indirect expansion to get value
-          done
-      - name: Output .env.production contents
-        run: cat .env.production
+          "my-cli --token '${{ steps.import-secrets.outputs.REDIS_PORT}}'"
